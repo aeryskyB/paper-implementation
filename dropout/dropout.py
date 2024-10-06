@@ -3,7 +3,6 @@ import jax
 from jax.typing import ArrayLike
 from typing import Union
 
-# during training time
 def dropout(y: ArrayLike, p: float = 0.5, key: Union[None, jax.Array] = None, is_training: bool = True) -> jax.Array:
     assert p >= 0 and p <= 1, "p must be in the range [0, 1]"
 
@@ -15,9 +14,6 @@ def dropout(y: ArrayLike, p: float = 0.5, key: Union[None, jax.Array] = None, is
         y_ = p * y
 
     return y_
-
-# during testing time:
-#   y_ = p * y
 
 if __name__ == "__main__":
     key = jax.random.key(2024)
