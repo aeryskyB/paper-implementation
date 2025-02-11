@@ -2,15 +2,17 @@ import jax
 from jax.typing import ArrayLike
 from typing import Union
 
-def dropout(y: ArrayLike, dropout_p: float = 0.5, key: Union[None, jax.Array] = None, is_training: bool = True) -> ArrayLike:
+def dropout(y: ArrayLike, dropout_p: float = 0.5, key: Union[None, jax.Array] = None, is_training: bool = True) -> Union[ArrayLike, AssertionError]:
     assert dropout_p >= 0 and dropout_p <= 1, "p must be in the range [0, 1]"
+
+    retention_p = 1 - dropout_p
 
     if is_training:
         if key is None: key = jax.random.key(0)
-        r = jax.random.bernoulli(key=key, p=1-dropout_p, shape=y.shape)
+        r = jax.random.bernoulli(key=key, p=retention_p, shape=y.shape)
         y_ = r * y
     else:
-        y_ = dropout_p * y
+        y_ = retention_p * y
 
     return y_
 
