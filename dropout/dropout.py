@@ -1,8 +1,7 @@
 import jax
-from jax.typing import ArrayLike
 from typing import Union
 
-def dropout(y: ArrayLike, dropout_p: float = 0.5, key: Union[None, jax.Array] = None, is_training: bool = True) -> Union[ArrayLike, AssertionError]:
+def dropout(y: jax.Array, dropout_p: float = 0.5, key: Union[None, jax.Array] = None, is_training: bool = True) -> Union[jax.Array, AssertionError]:
     assert dropout_p >= 0 and dropout_p <= 1, "p must be in the range [0, 1]"
 
     retention_p = 1 - dropout_p
