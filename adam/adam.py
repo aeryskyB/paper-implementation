@@ -16,12 +16,13 @@ class Adam:
         """
         Returns updated params
         """
+        updated_params = []
         for i, (param, gradient) in enumerate(zip(params, grads)):
             self.moments_1[i] = self.beta_1 * self.moments_1[i] + (1 - self.beta_1) * gradient
             self.moments_2[i] = self.beta_2 * self.moments_2[i] + (1 - self.beta_2) * gradient**2
             moment_1_ = self.moments_1[i] / (1 - self.beta_1**self.t)
             moment_2_ = self.moments_2[i] / (1 - self.beta_2**self.t)
-            params[i] = param - self.alpha * moment_1_ / (jnp.sqrt(moment_2_) + self.eps)
+            updated_params.append(param - self.alpha * moment_1_ / (jnp.sqrt(moment_2_) + self.eps))
         self.t = self.t + 1
-        return params
+        return updated_params
 
