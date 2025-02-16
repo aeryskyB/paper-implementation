@@ -1,5 +1,5 @@
 import jax.numpy as jnp
-from jax import random, Array, vmap, grad, jit, debug
+from jax import random, Array, vmap, grad, jit
 from typing import List
 from time import monotonic
 
@@ -37,7 +37,6 @@ def ffn_fwd_with_lora(params, lora_params, x):
     for (w, b), (s, lb, la) in zip(params, lora_params):
         y = relu((w + s*lb@la) @ y + b)
     y = (fw + s*flb@fla) @ y + fb
-    # debug.print("👀{x}", x=y.shape)
     return y
 
 batched_ffn_fwd_with_lora = vmap(ffn_fwd_with_lora, (None, None, 0), 0)
@@ -51,7 +50,6 @@ def predict(params, x, y):
 
 def predict_lora(params, lora_params, x, y):
     y_pred = batched_ffn_fwd_with_lora(params, lora_params, x)
-    # debug.print("👀{x}", x=y_pred.shape)
     return mse_loss(y_pred, y)
 
 @jit
@@ -61,13 +59,8 @@ def update(params, x, y, lr):
 
 @jit
 def update_lora(params, lora_params, x, y, lr):
-    # debug.print("🥲{x}", x=lora_params[0])
     lora_grads = grad(predict_lora, 1)(params, lora_params, x, y)
-    # debug.print("😭{x}", x=lora_grads[0])
-    ## don't tune scaling factor
     updated_lora_params = [(s, b-lr*db, a-lr*da) for (s, b, a), (_, db, da) in zip(lora_params, lora_grads)]
-    # debug.print("zzzzzzzz {x}", x=updated_lora_params[0][1].shape)
-    # debug.print("kkkkkkkk {x}", x=lora_params[0][1].shape)
     return updated_lora_params
 
 if __name__ == "__main__":
