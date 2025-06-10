@@ -3,7 +3,7 @@ from jax import Array
 from typing import List, Tuple
 
 class Adam:
-    def __init__(self, len_param_list: int, alpha: float = 1e-3, betas: Tuple[float, float] = (0.9, 0.999), eps: float =1e-8, dtype=jnp.float32):
+    def __init__(self, len_param_list: int, alpha: float = 1e-3, betas: Tuple[float, float] = (0.95, 0.95), eps: float =1e-8, dtype=jnp.float32):
         self.t = 1
         self.moments_1 = [jnp.zeros((1,), dtype=dtype)] * len_param_list
         self.moments_2 = [jnp.zeros((1,), dtype=dtype)] * len_param_list
